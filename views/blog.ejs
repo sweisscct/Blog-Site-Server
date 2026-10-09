@@ -8,8 +8,11 @@
 <body>
     <h1>Welcome to the Blog</h1>
     <% posts.forEach(post => { %>
+        <a href="/post/<%= post.id %>">
+        <h1><%= post.title %></h1>
         <h2>Author: <%= post.author %></h2>
         <p><%= post.content %></p>
+        </a>
     <% }) %>
     <form action="/new-blog-post" method="post">
         <label for="new-post">New Post:</label>

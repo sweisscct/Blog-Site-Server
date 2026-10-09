@@ -14,7 +14,21 @@ users = [{
 }];
 let currentUser = "sam";
 
-let posts = [];
+let posts = [
+    {
+        author: "Taufique",
+        title: "Databases",
+        content: "Databases are cool.",
+        id: 1
+    },
+    {
+        author: "Sam",
+        title: "Servers",
+        content: "This class",
+        id: 2,
+    }
+];
+let currentPostId = 3;
 
 app.get("/", (req, res) => {
     res.sendFile("index.html");
@@ -28,10 +42,35 @@ app.get("/blog", (req, res) => {
     res.render("blog.ejs", { posts });  
 });
 
+app.get("/post/:postID", (req, res) => {
+    const postID = req.params.postID;
+    let displayPost;
+    posts.forEach(post => {
+        console.log(post);
+        if (post.id == postID) displayPost = post; 
+    });
+    if (displayPost) res.render("post.ejs", {post: displayPost});
+    else res.redirect("/blog");
+    
+})
+
 app.post("/new-blog-post", (req, res) => {
     let content = req.body["new-post"];
     let author = currentUser;
-    posts.push({author, content});
+    /* Assigning ids
+        - Use the post title
+            - Are the titles unique?
+            - Changing title means changing id?
+        - Assign a number
+            - start at 1 and increment for each post
+                - deleted posts cause missing ids
+                - easy to guess valid ids and ids of near time posts
+                - this gets hard to synchonise across servers
+        - Use the post hash as the id (SHA256)
+            - A hash acts as a summary of the data
+    */
+    const id = currentPostId++
+    posts.push({author, content, id});
     res.redirect("/blog");
 })
 
